@@ -1,0 +1,30 @@
+services:
+  db:
+    image: timescale/timescaledb:latest-pg16
+    command: ["postgres", "-c", "shared_preload_libraries=timescaledb"]
+    container_name: tradingbot_db
+    environment:
+      POSTGRES_DB: tradingbot
+      POSTGRES_USER: bot2
+      POSTGRES_PASSWORD: will
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
+  grafana:
+    image: grafana/grafana:latest
+    container_name: tradingbot_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - db
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  pg_data:
+  grafana_data:
